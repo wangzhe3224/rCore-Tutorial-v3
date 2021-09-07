@@ -8,6 +8,9 @@
 mod console;
 mod lang_items;
 mod sbi;
+mod logging;
+
+use log::{*};
 
 global_asm!(include_str!("entry.asm"));
 
@@ -34,11 +37,14 @@ pub fn rust_main() -> ! {
         fn boot_stack_top();
     }
     clear_bss();
-    println!("Hello, world!");
-    println!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
-    println!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
-    println!(".data [{:#x}, {:#x})", sdata as usize, edata as usize);
-    println!(
+    logging::init();
+    warn!("Deallocate frame: {:#x}", stext as usize);
+    println!("Deallocate frame: {:#x}", stext as usize);
+
+    info!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
+    debug!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
+    trace!(".data [{:#x}, {:#x})", sdata as usize, edata as usize);
+    error!(
         "boot_stack [{:#x}, {:#x})",
         boot_stack as usize, boot_stack_top as usize
     );
